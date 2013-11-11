@@ -1,0 +1,3 @@
+*.swp
+.build*
+Mojolicious-Plugin-CSSLoader-*
