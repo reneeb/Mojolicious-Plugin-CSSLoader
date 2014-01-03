@@ -1,7 +1,11 @@
 History for Mojolicious::Plugin::CSSLoader
 =========================================
 
-0.01  2013-11-11
+0.03 2014-01-03T12:01:00
+
+  + fix CPANTS errors
+
+0.01 2013-11-11
 
       * initial release
 
