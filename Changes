@@ -1,7 +1,11 @@
 History for Mojolicious::Plugin::CSSLoader
 =========================================
 
-0.03 2014-01-03T12:01:00
+0.04 2014-07-05
+
+  + add feature: conditional loading for Internet Explorer
+
+0.03 2014-01-03
 
   + fix CPANTS errors
 

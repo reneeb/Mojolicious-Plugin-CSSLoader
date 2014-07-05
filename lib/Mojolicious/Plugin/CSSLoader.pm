@@ -7,7 +7,7 @@ use warnings;
 
 use parent 'Mojolicious::Plugin';
 
-our $VERSION = 0.03;
+our $VERSION = 0.04;
 
 sub register {
     my ($self, $app, $config) = @_;
@@ -30,20 +30,50 @@ sub register {
         return if $format ne 'html';
         return if !$c->stash->{__CSSLOADERFILES__};
 
-        my $load_css = join "\n", 
-                      map{
-                          my ($file,$config) = @{ $_ };
-                          my $local_base  = $config->{no_base} ? '' : $base;
-                          my $local_media = "";
+        my $load_css =
+            join "\n", 
+                map{
+                    my ($file,$config) = @{ $_ };
+                    my $local_base  = $config->{no_base} ? '' : $base;
+                    my $local_media = "";
 
-                          $local_media = ' media="' . $media . '"'           if $media;
-                          $local_media = ' media="' . $config->{media} . '"' if $config->{media};
+                    $local_media = ' media="' . $media . '"'           if $media;
+                    $local_media = ' media="' . $config->{media} . '"' if $config->{media};
 
-                          $config->{no_file} ? 
-                              qq~<style type="text/css">$file</style>~ :
-                              qq~<link rel="stylesheet" href="$local_base$file"$local_media/>~;
-                      }
-                      @{ $c->stash->{__CSSLOADERFILES__} || [] };
+                    my $ie_start = '';
+                    my $ie_end   = '';
+
+                    if ( exists $config->{ie} ) {
+                        my $start_extra = '';
+                        my $end_extra   = '';
+                        my $cmp         = '';
+                        my $version     = '';
+
+                        if ( !ref $config->{ie} && !$config->{ie} ) {
+                            $start_extra = '<!-->';
+                            $end_extra   = '<!--';
+                            $cmp         = '!';
+                        }
+                        elsif( ref $config->{ie} ) {
+                            my %map = qw/> gt >= gte < lt <= lte/;
+                            (my $key, $version) = %{ $config->{ie} };
+                            $cmp = $map{$key} || '';
+                            $cmp .= ' ' if $cmp;
+                        }
+
+                        $ie_start = sprintf "<!-- [if %sIE %s]>%s",
+                            $cmp,
+                            $version,
+                            $start_extra;
+
+                        $ie_end = sprintf "%s<![endif]-->", $end_extra;
+                    }
+
+                    $config->{no_file} ? 
+                         qq~$ie_start<style type="text/css">$file</style>$ie_end~ :
+                         qq~$ie_start<link rel="stylesheet" href="$local_base$file"$local_media/>$ie_end~;
+                }
+                @{ $c->stash->{__CSSLOADERFILES__} || [] };
 
         return if !$load_css;
 
@@ -85,6 +115,20 @@ this CSS file this way:
   
   # <link rel="stylesheet" href="http://domain/css_file.css"/>
   <% css_load('http://domain/css_file.css', {no_base => 1});
+  
+  # load css file only in Internet Explorer
+  # <!-- [if IE]> <link rel="stylesheet" href="http://domain/css_file.css"/> <![endif] -->
+  <% css_load('css_file.css', {ie => 1});
+  
+  # load css file except in Internet Explorer
+  # <!-- [if !IE]><!--> <link rel="stylesheet" href="http://domain/css_file.css"/> <!--<![endif] -->
+  <% css_load('css_file.css', {ie => 0});
+  
+  # load css file in Internet Explorer greater version 7
+  # <!-- [if gt IE 7]> <link rel="stylesheet" href="http://domain/css_file.css"/> <![endif] -->
+  <% css_load('css_file.css', {ie => { '>' => 7 } });
+  
+  # allowed ie settings: >, >=, <, <=, ==
 
 =head1 HOOKS
 
