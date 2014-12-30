@@ -16,7 +16,7 @@ use_ok 'Mojolicious::Plugin::CSSLoader';
 my $dir = dirname( __FILE__ ) || '.';
 app->static->paths([ "$dir/public" ]);
 
-plugin('JSLoader');
+plugin('CSSLoader');
 
 any '/'      => sub { shift->render( 'default' ) };
 any '/hello' => sub {
@@ -31,16 +31,16 @@ any '/hello' => sub {
 
 my $t = Test::Mojo->new;
 
-my $base_check  = qq~<body>
+my $base_check  = qq~<link rel="stylesheet" href="test.css"/><body>
 
 <h2>Test</h2>
-<script type="text/javascript" src="test.css"></script></body>
+</body>
 ~;
-my $hello_check  = qq~<body>
+my $hello_check  = qq~<link rel="stylesheet" href="tester.css"/>
+<link rel="stylesheet" href="test.css"/><body>
 
 <h2>Test</h2>
-<script type="text/javascript" src="tester.css"></script>
-<script type="text/javascript" src="test.css"></script></body>
+</body>
 ~;
 
 $t->get_ok( '/' )->status_is( 200 )->content_is( $base_check );
