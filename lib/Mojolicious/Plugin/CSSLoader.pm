@@ -7,7 +7,7 @@ use warnings;
 
 use parent 'Mojolicious::Plugin';
 
-our $VERSION = 0.04;
+our $VERSION = 0.05;
 
 sub register {
     my ($self, $app, $config) = @_;
@@ -21,6 +21,15 @@ sub register {
 
     $app->helper( css_load => sub {
         my $c = shift;
+
+        if ( $_[1]->{check} ) {
+            my $asset = $c->app->static->file(
+                $_[1]->{no_base} ? $_[0] : "$base$_[0]"
+            );
+
+            return '' if !$asset;
+        }
+
         push @{ $c->stash->{__CSSLOADERFILES__} }, [ @_ ];
     } );
 

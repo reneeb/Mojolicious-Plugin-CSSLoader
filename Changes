@@ -1,6 +1,14 @@
 History for Mojolicious::Plugin::CSSLoader
 =========================================
 
+0.05 2014-12-30
+
+  [IMPROVEMENTS]
+  * add filecheck: if css file doesn't exist (either as file on disk or in __DATA__ section), the css tag is not created
+
+  [TESTS]
+  * use functional api of Mojo::JSON as the OO api was deprecated in Mojolicious 5.54
+
 0.04 2014-07-05
 
   + add feature: conditional loading for Internet Explorer

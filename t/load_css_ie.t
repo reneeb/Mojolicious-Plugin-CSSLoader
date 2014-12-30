@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 
 use Mojolicious::Lite;
-use Mojo::JSON;
+use Mojo::JSON qw(decode_json);
 
 use Test::More;
 use Test::Mojo;
@@ -21,7 +21,7 @@ any '/hello' => sub {
     my $params = $self->param('ie');
 
     if ( $params !~ m{\A [01] \z}x ) {
-        $params = Mojo::JSON->new->decode( $params );
+        $params = decode_json( $params );
     }
 
     $self->css_load( 'second_file.css', { ie => $params } );
