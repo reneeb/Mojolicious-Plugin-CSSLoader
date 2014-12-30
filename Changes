@@ -1,6 +1,9 @@
 History for Mojolicious::Plugin::CSSLoader
 =========================================
 
+  [IMPROVEMENTS]
+  * add filecheck: if css file doesn't exist (either as file on disk or in __DATA__ section), the css tag is not created
+
 0.04 2014-07-05
 
   + add feature: conditional loading for Internet Explorer
