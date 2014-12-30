@@ -1,6 +1,11 @@
 History for Mojolicious::Plugin::CSSLoader
 =========================================
 
+0.06 2014-12-30
+
+  [MISC]
+  * 0.05 includede too many files. Cleaned repository and created new version
+
 0.05 2014-12-30
 
   [IMPROVEMENTS]
