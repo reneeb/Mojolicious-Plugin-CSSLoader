@@ -44,6 +44,9 @@ sub register {
                 map{
                     my ($file,$config) = @{ $_ };
                     my $local_base  = $config->{no_base} ? '' : $base;
+
+                    $local_base  = $c->url_for( $local_base ) if $local_base;
+
                     my $local_media = "";
 
                     $local_media = ' media="' . $media . '"'           if $media;
