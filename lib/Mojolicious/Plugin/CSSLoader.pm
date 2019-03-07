@@ -123,7 +123,7 @@ This plugin adds a helper method to your web application:
 
 =head2 css_load
 
-This method requires at least one parameter: The path to the JavaScript file to load.
+This method requires at least one parameter: The path to the CSS file to load.
 An optional second parameter is the configuration. You can switch off the I<base> for
 this CSS file this way:
 
