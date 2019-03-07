@@ -1,0 +1,143 @@
+[![Build Status](https://travis-ci.org/reneeb/Mojolicious-Plugin-CSSLoader.svg?branch=master)](https://travis-ci.org/reneeb/Mojolicious-Plugin-CSSLoader)
+[![Kwalitee status](http://cpants.cpanauthors.org/dist/Mojolicious-Plugin-CSSLoader.png)](http://cpants.charsbar.org/dist/overview/Mojolicious-Plugin-CSSLoader)
+[![GitHub issues](https://img.shields.io/github/issues/reneeb/Mojolicious-Plugin-CSSLoader.svg)](https://github.com/reneeb/Mojolicious-Plugin-CSSLoader/issues)
+
+# NAME
+
+Mojolicious::Plugin::CSSLoader - move css loading to the end of the document
+
+# VERSION
+
+version 0.07
+
+# SYNOPSIS
+
+In your `startup`:
+
+      sub startup {
+          my $self = shift;
+    
+          # do some Mojolicious stuff
+          $self->plugin( 'CSSLoader' );
+
+          # more Mojolicious stuff
+      }
+
+In your template:
+
+    <% css_load('css_file.css') %>
+
+# HELPERS
+
+This plugin adds a helper method to your web application:
+
+## css\_load
+
+This method requires at least one parameter: The path to the JavaScript file to load.
+An optional second parameter is the configuration. You can switch off the _base_ for
+this CSS file this way:
+
+    # <link rel="stylesheet" href="$base/css_file.css"/>
+    <% css_load('css_file.css') %>
+    
+    # <link rel="stylesheet" href="http://domain/css_file.css"/>
+    <% css_load('http://domain/css_file.css', {no_base => 1});
+    
+    # load css file only in Internet Explorer
+    # <!-- [if IE]> <link rel="stylesheet" href="http://domain/css_file.css"/> <![endif] -->
+    <% css_load('css_file.css', {ie => 1});
+    
+    # load css file except in Internet Explorer
+    # <!-- [if !IE]><!--> <link rel="stylesheet" href="http://domain/css_file.css"/> <!--<![endif] -->
+    <% css_load('css_file.css', {ie => 0});
+    
+    # load css file in Internet Explorer greater version 7
+    # <!-- [if gt IE 7]> <link rel="stylesheet" href="http://domain/css_file.css"/> <![endif] -->
+    <% css_load('css_file.css', {ie => { '>' => 7 } });
+    
+    # allowed ie settings: >, >=, <, <=, ==
+
+# HOOKS
+
+When you use this module, a hook for _after\_render_ is installed. That hook inserts
+the `<link>` tag at the end of the `<head>` part or at the start of the
+document.
+
+# METHODS
+
+## register
+
+Called when registering the plugin. On creation, the plugin accepts a hashref to configure the plugin.
+
+    # load plugin, alerts are dismissable by default
+    $self->plugin( 'CSSLoader' );
+
+### Configuration
+
+    $self->plugin( 'CSSLoader' => {
+        base  => 'http://domain/css',  # base for all CSS files
+        media => 'screen',             # media setting (default: none)
+    });
+
+# NOTES
+
+This plugin uses the _stash_ key `__CSSLOADERFILES__`, so you should avoid using
+this stash key for your own purposes.
+
+
+
+# Development
+
+The distribution is contained in a Git repository, so simply clone the
+repository
+
+```
+$ git clone http://github.com/reneeb/Mojolicious-Plugin-CSSLoader.git
+```
+
+and change into the newly-created directory.
+
+```
+$ cd Mojolicious-Plugin-CSSLoader
+```
+
+The project uses [`Dist::Zilla`](https://metacpan.org/pod/Dist::Zilla) to
+build the distribution, hence this will need to be installed before
+continuing:
+
+```
+$ cpanm Dist::Zilla
+```
+
+To install the required prequisite packages, run the following set of
+commands:
+
+```
+$ dzil authordeps --missing | cpanm
+$ dzil listdeps --author --missing | cpanm
+```
+
+The distribution can be tested like so:
+
+```
+$ dzil test
+```
+
+To run the full set of tests (including author and release-process tests),
+add the `--author` and `--release` options:
+
+```
+$ dzil test --author --release
+```
+
+# AUTHOR
+
+Renee Baecker <reneeb@cpan.org>
+
+# COPYRIGHT AND LICENSE
+
+This software is Copyright (c) 2015 by Renee Baecker.
+
+This is free software, licensed under:
+
+    The Artistic License 2.0 (GPL Compatible)
